@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -85,8 +86,8 @@ class NotificationIntegrationTest {
     }
 
     @Test
-    @org.springframework.transaction.annotation.Transactional
-    void fullFlow_success_persistsLog() throws Exception {
+    @Transactional
+    void givenValidNotificationRequest_whenSendingThroughFullFlow_thenSuccessfullyPersistsLog() throws Exception {
         // Given: build JSON using the actual saved ID
         String payload = String.format("""
         {
