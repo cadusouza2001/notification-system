@@ -14,6 +14,7 @@ import {
   Stack,
   CircularProgress,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import SendIcon from "@mui/icons-material/Send";
 import { sendNotification } from "../api";
 
@@ -22,13 +23,22 @@ type Props = {
 };
 
 const categories = ["Sports", "Finance", "Movies"];
-const glassSx = {
+
+const GlassCard = styled(Card)(() => ({
   background: "rgba(255, 255, 255, 0.8)",
   backdropFilter: "blur(12px)",
   border: "1px solid rgba(255, 255, 255, 0.3)",
   boxShadow:
     "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-};
+}));
+
+const SubmitButton = styled(Button)(() => ({
+  alignSelf: "flex-start",
+  transition: "transform 0.2s ease",
+  "&:hover": {
+    transform: "scale(1.02)",
+  },
+}));
 
 export default function NotificationForm({ onSent }: Props) {
   const [category, setCategory] = useState<string>(categories[0]);
@@ -60,13 +70,9 @@ export default function NotificationForm({ onSent }: Props) {
   };
 
   return (
-    <Card sx={glassSx}>
+    <GlassCard>
       <CardContent>
-        <Typography
-          variant="h6"
-          gutterBottom
-          sx={{ animation: "fadeInUp 0.5s ease both" }}
-        >
+        <Typography variant="h6" gutterBottom>
           Send Notification
         </Typography>
         <form onSubmit={handleSubmit}>
@@ -97,15 +103,10 @@ export default function NotificationForm({ onSent }: Props) {
               required
             />
 
-            <Button
+            <SubmitButton
               type="submit"
               variant="contained"
               disabled={submitting}
-              sx={{
-                transition: "transform 0.2s ease",
-                "&:hover": { transform: "scale(1.02)" },
-                alignSelf: "flex-start",
-              }}
             >
               {submitting ? (
                 <>
@@ -118,7 +119,7 @@ export default function NotificationForm({ onSent }: Props) {
                   Send
                 </>
               )}
-            </Button>
+            </SubmitButton>
           </Stack>
         </form>
 
@@ -136,6 +137,6 @@ export default function NotificationForm({ onSent }: Props) {
           </Alert>
         </Snackbar>
       </CardContent>
-    </Card>
+    </GlassCard>
   );
 }

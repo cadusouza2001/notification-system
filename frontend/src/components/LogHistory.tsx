@@ -15,6 +15,7 @@ import {
   TableContainer,
   CircularProgress,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { fetchLogs, type LogResponse } from "../api";
 import type { ChipProps } from "@mui/material/Chip";
@@ -23,22 +24,35 @@ type Props = {
   refreshKey?: number;
 };
 
-const glassSx = {
+const GlassCard = styled(Card)(() => ({
   background: "rgba(255, 255, 255, 0.8)",
   backdropFilter: "blur(12px)",
   border: "1px solid rgba(255, 255, 255, 0.3)",
   boxShadow:
     "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-};
+  flex: 1,
+  display: "flex",
+  flexDirection: "column",
+  overflow: "hidden",
+}));
 
+const RefreshButton = styled(Button)(() => ({
+  minWidth: 140,
+  transition: "transform 0.2s ease",
+  "&:hover": {
+    transform: "scale(1.02)",
+  },
+}));
+
+// Helper Functions
 function getCategoryColor(name: string): ChipProps["color"] {
   switch (name) {
     case "Sports":
-      return "secondary"; // Orange
+      return "secondary";
     case "Finance":
-      return "primary"; // Blue
+      return "primary";
     case "Movies":
-      return "default"; // Grey
+      return "default";
     default:
       return "default";
   }
@@ -47,11 +61,11 @@ function getCategoryColor(name: string): ChipProps["color"] {
 function getChannelColor(name: string): ChipProps["color"] {
   switch (name) {
     case "SMS":
-      return "default"; // Grey
+      return "default";
     case "E-Mail":
-      return "primary"; // Blue
+      return "primary";
     case "Push Notification":
-      return "secondary"; // Orange
+      return "secondary";
     default:
       return "default";
   }
@@ -92,15 +106,7 @@ export default function LogHistory({ refreshKey }: Props) {
   }, [refreshKey]);
 
   return (
-    <Card
-      sx={{
-        ...glassSx,
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-      }}
-    >
+    <GlassCard>
       <CardContent
         sx={{
           display: "flex",
@@ -114,27 +120,17 @@ export default function LogHistory({ refreshKey }: Props) {
           justifyContent="space-between"
           alignItems="center"
         >
-          <Typography
-            variant="h6"
-            sx={{ animation: "fadeInUp 0.5s ease both" }}
-          >
-            Log History
-          </Typography>
-          <Button
+          <Typography variant="h6">Log History</Typography>
+          <RefreshButton
             onClick={loadData}
             variant="outlined"
             disabled={loading}
             startIcon={
               loading ? <CircularProgress size={18} /> : <RefreshIcon />
             }
-            sx={{
-              minWidth: 140,
-              transition: "transform 0.2s ease",
-              "&:hover": { transform: "scale(1.02)" },
-            }}
           >
             Refresh
-          </Button>
+          </RefreshButton>
         </Stack>
 
         <TableContainer
@@ -159,15 +155,8 @@ export default function LogHistory({ refreshKey }: Props) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((r, index) => (
-                <TableRow
-                  key={r.id}
-                  hover
-                  sx={{
-                    animation: "fadeInUp 0.5s ease both",
-                    animationDelay: `${index * 0.05}s`,
-                  }}
-                >
+              {rows.map((r) => (
+                <TableRow key={r.id} hover>
                   <TableCell>{formatTimestamp(r.timestamp)}</TableCell>
                   <TableCell>{r.type}</TableCell>
                   <TableCell>{r.userName}</TableCell>
@@ -197,6 +186,6 @@ export default function LogHistory({ refreshKey }: Props) {
           </Table>
         </TableContainer>
       </CardContent>
-    </Card>
+    </GlassCard>
   );
 }
