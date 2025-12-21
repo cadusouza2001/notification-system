@@ -108,6 +108,15 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.11</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/domain/model/**</exclude>
+                        <exclude>**/presentation/dto/**</exclude>
+                        <exclude>**/NotificationBackendApplication.class</exclude>
+                        <exclude>**/infrastructure/config/**</exclude>
+                        <exclude>**/infrastructure/persistence/repository/**</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
