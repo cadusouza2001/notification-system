@@ -12,7 +12,9 @@ import {
   Snackbar,
   Alert,
   Stack,
+  CircularProgress,
 } from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
 import { sendNotification } from "../api";
 
 type Props = {
@@ -20,6 +22,13 @@ type Props = {
 };
 
 const categories = ["Sports", "Finance", "Movies"];
+const glassSx = {
+  background: "rgba(255, 255, 255, 0.8)",
+  backdropFilter: "blur(12px)",
+  border: "1px solid rgba(255, 255, 255, 0.3)",
+  boxShadow:
+    "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+};
 
 export default function NotificationForm({ onSent }: Props) {
   const [category, setCategory] = useState<string>(categories[0]);
@@ -51,9 +60,13 @@ export default function NotificationForm({ onSent }: Props) {
   };
 
   return (
-    <Card>
+    <Card sx={glassSx}>
       <CardContent>
-        <Typography variant="h6" gutterBottom>
+        <Typography
+          variant="h6"
+          gutterBottom
+          sx={{ animation: "fadeInUp 0.5s ease both" }}
+        >
           Send Notification
         </Typography>
         <form onSubmit={handleSubmit}>
@@ -84,8 +97,27 @@ export default function NotificationForm({ onSent }: Props) {
               required
             />
 
-            <Button type="submit" variant="contained" disabled={submitting}>
-              {submitting ? "Sending..." : "Send"}
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={submitting}
+              sx={{
+                transition: "transform 0.2s ease",
+                "&:hover": { transform: "scale(1.02)" },
+                alignSelf: "flex-start",
+              }}
+            >
+              {submitting ? (
+                <>
+                  <CircularProgress size={20} sx={{ mr: 1 }} />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <SendIcon sx={{ mr: 1 }} />
+                  Send
+                </>
+              )}
             </Button>
           </Stack>
         </form>
