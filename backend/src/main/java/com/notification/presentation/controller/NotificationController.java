@@ -1,0 +1,44 @@
+package com.notification.presentation.controller;
+
+import com.notification.presentation.dto.LogResponse;
+import com.notification.presentation.dto.NotificationRequest;
+import lombok.RequiredArgsConstructor;
+import com.notification.application.service.NotificationService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/notifications")
+@RequiredArgsConstructor
+@Validated
+public class NotificationController {
+
+    private final NotificationService notificationService;
+
+    @PostMapping
+    public ResponseEntity<Void> send(@Valid @RequestBody NotificationRequest request) {
+        notificationService.sendNotification(request);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
+    @GetMapping("/log")
+    public ResponseEntity<List<LogResponse>> history() {
+        return ResponseEntity.ok(notificationService.getAllLogs());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArg(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleGeneral(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Internal error: " + ex.getMessage());
+    }
+}
