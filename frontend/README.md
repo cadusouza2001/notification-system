@@ -1,73 +1,56 @@
-# React + TypeScript + Vite
+# Notification Dashboard (Frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Modern dashboard to submit notifications and view delivery logs. Built with React + TypeScript + MUI with a focus on UX (Light Mode, Glassmorphism, Responsive layout).
 
-Currently, two official plugins are available:
+## Key Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **UX**
+  - Light mode, responsive layout, glassmorphism touches
+- **Tech**
+  - React, TypeScript, Vite, MUI (Material UI), Axios
+- **Testing**
+  - Cypress: component tests for units, E2E tests for flows
+  - Coverage: component + E2E supported; HTML and text-summary reports
 
-## React Compiler
+## Running Locally
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Prerequisites: Node.js 18+ (recommend 20+)
+- Install:
+  ```bash
+  cd frontend
+  npm ci
+  ```
+- Start:
+  ```bash
+  npm run dev
+  ```
+- App: http://localhost:5173
 
-## Expanding the ESLint configuration
+## Testing
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Run tests:
+  ```bash
+  npm test
+  ```
+  - Component tests run headless; E2E expects the dev server to be up
+- Coverage workflow (local):
+  ```bash
+  npm run test:cov
+  ```
+  - Reports:
+    - HTML: frontend/coverage/index.html
+    - Text summary printed to console
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Code Style
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- **Prettier**: CI automatically formats and commits code changes when possible
+- Manual formatting:
+  ```bash
+  npm run format:fix
+  ```
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Project Notes
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- API access through src/api.ts to the backend
+- Component tests mount UI in isolation; E2E verifies typical user flows
+- CI starts dev server for E2E tests and uploads Cypress artifacts
