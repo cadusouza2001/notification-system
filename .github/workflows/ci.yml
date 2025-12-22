@@ -81,7 +81,13 @@ jobs:
 
       - name: Install dependencies
         working-directory: frontend
-        run: npm ci
+        run: npm install
+
+      - name: Commit updated package-lock.json
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(frontend): update package-lock.json [skip ci]"
+          file_pattern: frontend/package-lock.json
 
       # 1. Auto-format and commit
       - name: Apply Code Formatting (Prettier)
