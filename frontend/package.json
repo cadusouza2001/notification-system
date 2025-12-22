@@ -10,7 +10,12 @@
     "preview": "vite preview",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "test": "cypress run --component && cypress run --e2e"
+    "cy:run:component:cov": "cross-env VITE_COVERAGE=true cypress run --component",
+    "cy:run:e2e:cov": "cross-env VITE_COVERAGE=true cypress run --e2e",
+    "coverage:report": "nyc report --reporter=html --reporter=text-summary",
+    "coverage:check": "nyc check-coverage --lines 85 --functions 85 --branches 80 --statements 85",
+    "test": "cypress run --component && cypress run --e2e",
+    "test:cov": "npm run cy:run:component:cov && npm run cy:run:e2e:cov && npm run coverage:report && npm run coverage:check"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -22,18 +27,44 @@
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
+    "@cypress/code-coverage": "^3.14.7",
     "@eslint/js": "^9.39.1",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^4.3.1",
+    "babel-plugin-istanbul": "^7.0.1",
+    "cross-env": "^7.0.3",
     "cypress": "^14.5.4",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
+    "nyc": "^17.1.0",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
-    "vite": "^4.5.3"
+    "vite": "^4.5.3",
+    "vite-plugin-istanbul": "^7.2.1"
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.tsx"
+    ],
+    "exclude": [
+      "cypress/**/*",
+      "src/**/*.d.ts"
+    ],
+    "reporter": [
+      "text-summary",
+      "lcov",
+      "html"
+    ],
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "all": true,
+    "cache": false
   }
 }

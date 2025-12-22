@@ -2,6 +2,7 @@ import React from "react";
 import { mount } from "cypress/react";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import theme from "../../src/theme";
+import "@cypress/code-coverage/support";
 
 // Augment Cypress types to include the mount command
 declare global {

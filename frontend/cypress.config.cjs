@@ -6,11 +6,18 @@ module.exports = defineConfig({
       framework: "react",
       bundler: "vite",
     },
+    setupNodeEvents(on, config) {
+      const codeCoverageTask = require("@cypress/code-coverage/task");
+      codeCoverageTask(on, config);
+      return config;
+    },
   },
   e2e: {
     baseUrl: "http://localhost:5173",
     setupNodeEvents(on, config) {
-      // add node event listeners here if needed
+      const codeCoverageTask = require("@cypress/code-coverage/task");
+      codeCoverageTask(on, config);
+      return config;
     },
   },
 });
