@@ -36,7 +36,7 @@ flowchart LR
         direction LR
         controller[Controller]
         service[Service]
-        strategy{{Strategy Selection<br/>SMS &#124; Email &#124; Push}}
+        strategy{{Strategy Selection<br/>SMS, Email, Push}}
         repository[Repository<br/>JPA]
 
         controller --> service
