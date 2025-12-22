@@ -20,9 +20,41 @@ A production-ready, full-stack notification platform designed with **Clean Archi
 3. Access the services:
    - **Frontend Dashboard**: http://localhost:5173
    - **Backend API**: http://localhost:8080
-   - **PostgreSQL**: http://localhost:5432
+   - **PostgreSQL**: localhost:5432
 
 The command above will start all three services: PostgreSQL database, Spring Boot backend, and React frontend.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    user([User])
+    fe[React Frontend]
+    db[(PostgreSQL<br/>Database)]
+
+    subgraph Backend [Spring Boot Backend]
+        direction LR
+        controller[Controller]
+        service[Service]
+        strategy{{Strategy Selection<br/>SMS | Email | Push}}
+        repository[Repository<br/>JPA]
+
+        controller --> service
+        service --> strategy
+        strategy --> repository
+    end
+
+    user --> fe
+    fe --> controller
+    repository --> db
+```
+
+The diagram illustrates the complete system flow:
+
+- **User Interaction**: Users interact with the React frontend dashboard
+- **API Communication**: Frontend communicates with Spring Boot backend via REST API
+- **Data Persistence**: Backend stores data in PostgreSQL using JPA
+- **Internal Flow**: Backend follows Clean Architecture with Controller → Service → Strategy Selection → Repository layers
 
 ## Architecture Highlights
 

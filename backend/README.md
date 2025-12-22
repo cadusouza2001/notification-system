@@ -49,6 +49,21 @@ curl -X POST http://localhost:8080/api/notifications \
   -d '{"category":"Sports","message":"Your team won the championship!"}'
 ```
 
+## API Documentation & Monitoring
+
+### Swagger/OpenAPI Documentation
+
+Interactive API documentation is available via Swagger UI:
+
+- **URL**: http://localhost:8080/swagger-ui.html
+- **Features**: Test endpoints directly, view request/response schemas, download OpenAPI spec
+
+### Health Checks & Monitoring
+
+Spring Boot Actuator provides production-ready monitoring endpoints:
+
+- **Health Check**: http://localhost:8080/actuator/health
+
 ## Key Features
 
 - **Clean Architecture**
