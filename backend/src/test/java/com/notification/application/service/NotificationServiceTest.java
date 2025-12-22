@@ -1,5 +1,12 @@
 package com.notification.application.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+
 import com.notification.domain.model.Category;
 import com.notification.domain.model.Channel;
 import com.notification.domain.model.NotificationLog;
@@ -12,21 +19,13 @@ import com.notification.infrastructure.persistence.repository.NotificationLogRep
 import com.notification.infrastructure.persistence.repository.SubscriptionRepository;
 import com.notification.infrastructure.persistence.repository.UserChannelRepository;
 import com.notification.presentation.dto.NotificationRequest;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.ArgumentMatchers.*;
 
 class NotificationServiceTest {
 
@@ -47,13 +46,13 @@ class NotificationServiceTest {
         given(smsStrategy.getChannelName()).willReturn("SMS");
         given(emailStrategy.getChannelName()).willReturn("E-Mail");
         given(pushStrategy.getChannelName()).willReturn("Push Notification");
-        notificationService = new NotificationService(
-                Set.of(smsStrategy, emailStrategy, pushStrategy),
-                categoryRepository,
-                subscriptionRepository,
-                userChannelRepository,
-                notificationLogRepository
-        );
+        notificationService =
+                new NotificationService(
+                        Set.of(smsStrategy, emailStrategy, pushStrategy),
+                        categoryRepository,
+                        subscriptionRepository,
+                        userChannelRepository,
+                        notificationLogRepository);
     }
 
     @Test
@@ -95,7 +94,8 @@ class NotificationServiceTest {
     }
 
     @Test
-    void givenSmsStrategyThrowsException_whenSendingNotification_thenServiceDoesNotPropagateAndNoLogSaved() {
+    void
+            givenSmsStrategyThrowsException_whenSendingNotification_thenServiceDoesNotPropagateAndNoLogSaved() {
         // Given
         NotificationRequest req = new NotificationRequest();
         req.setCategory("Sports");
@@ -125,7 +125,8 @@ class NotificationServiceTest {
         given(userChannelRepository.findByUser(user)).willReturn(List.of(ucSms));
 
         willThrow(new RuntimeException("SMS failure"))
-                .given(smsStrategy).send(eq(user), eq("Match update"));
+                .given(smsStrategy)
+                .send(eq(user), eq("Match update"));
 
         // When
         notificationService.sendNotification(req);
@@ -135,7 +136,8 @@ class NotificationServiceTest {
     }
 
     @Test
-    void givenInvalidCategoryName_whenSendingNotification_thenThrowsIllegalArgumentExceptionAndNoLogSaved() {
+    void
+            givenInvalidCategoryName_whenSendingNotification_thenThrowsIllegalArgumentExceptionAndNoLogSaved() {
         // Given: invalid category name
         NotificationRequest req = new NotificationRequest();
         req.setCategory("InvalidCategory");
@@ -158,7 +160,8 @@ class NotificationServiceTest {
     }
 
     @Test
-    void givenValidCategoryButNoSubscriptions_whenSendingNotification_thenNoNotificationSentAndNoLogSaved() {
+    void
+            givenValidCategoryButNoSubscriptions_whenSendingNotification_thenNoNotificationSentAndNoLogSaved() {
         // Given: valid category but no subscriptions
         NotificationRequest req = new NotificationRequest();
         req.setCategory("Sports");
@@ -213,7 +216,8 @@ class NotificationServiceTest {
     }
 
     @Test
-    void givenUserWithDisabledChannel_whenSendingNotification_thenNoNotificationSentAndNoLogSaved() {
+    void
+            givenUserWithDisabledChannel_whenSendingNotification_thenNoNotificationSentAndNoLogSaved() {
         // Given: user has channel but it's disabled
         NotificationRequest req = new NotificationRequest();
         req.setCategory("Sports");
@@ -349,11 +353,12 @@ class NotificationServiceTest {
     @Test
     void givenLogsInRepository_whenGettingAllLogs_thenReturnsFormattedLogs() {
         // Given: mock logs in repository
-        NotificationLog log1 = NotificationLog.builder()
-                .id(1L)
-                .message("Test message 1")
-                .createdAt(java.time.OffsetDateTime.now())
-                .build();
+        NotificationLog log1 =
+                NotificationLog.builder()
+                        .id(1L)
+                        .message("Test message 1")
+                        .createdAt(java.time.OffsetDateTime.now())
+                        .build();
 
         User user = new User();
         user.setName("John Doe");
@@ -386,14 +391,15 @@ class NotificationServiceTest {
     @Test
     void givenLogWithNullFields_whenGettingAllLogs_thenHandlesNullFields() {
         // Given: log with null user, category, channel
-        NotificationLog log = NotificationLog.builder()
-                .id(2L)
-                .message("Test message")
-                .createdAt(null)
-                .user(null)
-                .category(null)
-                .channel(null)
-                .build();
+        NotificationLog log =
+                NotificationLog.builder()
+                        .id(2L)
+                        .message("Test message")
+                        .createdAt(null)
+                        .user(null)
+                        .category(null)
+                        .channel(null)
+                        .build();
 
         given(notificationLogRepository.findAll(any(org.springframework.data.domain.Sort.class)))
                 .willReturn(List.of(log));

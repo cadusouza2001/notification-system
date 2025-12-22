@@ -2,9 +2,8 @@ package com.notification.domain.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
-
 import java.time.OffsetDateTime;
+import lombok.*;
 
 @Entity
 @Table(name = "user_channels")
@@ -15,20 +14,23 @@ import java.time.OffsetDateTime;
 @Builder
 public class UserChannel {
 
-    @EmbeddedId
-    private UserChannelId id;
+    @EmbeddedId private UserChannelId id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("userId")
-    @JoinColumn(name = "user_id", nullable = false,
+    @JoinColumn(
+            name = "user_id",
+            nullable = false,
             foreignKey = @ForeignKey(name = "fk_user_channels_user"))
     private User user;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("channelId")
-    @JoinColumn(name = "channel_id", nullable = false,
+    @JoinColumn(
+            name = "channel_id",
+            nullable = false,
             foreignKey = @ForeignKey(name = "fk_user_channels_channel"))
     private Channel channel;
 

@@ -1,8 +1,12 @@
 package com.notification.infrastructure;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.notification.NotificationBackendApplication;
-import com.notification.infrastructure.persistence.repository.*;
 import com.notification.domain.model.*;
+import com.notification.infrastructure.persistence.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +18,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-@SpringBootTest(classes = NotificationBackendApplication.class, properties = {
-    "spring.flyway.enabled=false",
-    "spring.jpa.hibernate.ddl-auto=create-drop",
-    "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect"
-})
+@SpringBootTest(
+        classes = NotificationBackendApplication.class,
+        properties = {
+            "spring.flyway.enabled=false",
+            "spring.jpa.hibernate.ddl-auto=create-drop",
+            "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect"
+        })
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase(replace = Replace.ANY)
 class NotificationIntegrationTest {
@@ -87,9 +89,11 @@ class NotificationIntegrationTest {
 
     @Test
     @Transactional
-    void givenValidNotificationRequest_whenSendingThroughFullFlow_thenSuccessfullyPersistsLog() throws Exception {
+    void givenValidNotificationRequest_whenSendingThroughFullFlow_thenSuccessfullyPersistsLog()
+            throws Exception {
         // Given: build JSON using the actual saved ID
-        String payload = """
+        String payload =
+                """
         {
           "category": "Sports",
           "message": "Integration test message"
@@ -98,12 +102,11 @@ class NotificationIntegrationTest {
 
         // When
         mockMvc.perform(
-                post("/api/notifications")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(payload)
-            )
-            // Then - HTTP (controller returns 202 ACCEPTED)
-            .andExpect(status().isAccepted());
+                        post("/api/notifications")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(payload))
+                // Then - HTTP (controller returns 202 ACCEPTED)
+                .andExpect(status().isAccepted());
 
         // Then - DB
         long count = logRepository.count();

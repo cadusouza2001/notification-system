@@ -1,17 +1,16 @@
 package com.notification.presentation.controller;
 
+import com.notification.application.service.NotificationService;
 import com.notification.presentation.dto.LogResponse;
 import com.notification.presentation.dto.NotificationRequest;
+import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import com.notification.application.service.NotificationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -38,8 +37,12 @@ public class NotificationController {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleValidation(org.springframework.web.bind.MethodArgumentNotValidException ex) {
-        return ResponseEntity.badRequest().body("Validation failed: " + ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+    public ResponseEntity<String> handleValidation(
+            org.springframework.web.bind.MethodArgumentNotValidException ex) {
+        return ResponseEntity.badRequest()
+                .body(
+                        "Validation failed: "
+                                + ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
     }
 
     @ExceptionHandler(Exception.class)

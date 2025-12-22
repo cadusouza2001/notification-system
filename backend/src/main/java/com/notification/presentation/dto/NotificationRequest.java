@@ -10,9 +10,7 @@ import lombok.*;
 @Builder
 public class NotificationRequest {
 
-    @NotBlank
-    private String category;
+    @NotBlank private String category;
 
-    @NotBlank
-    private String message;
+    @NotBlank private String message;
 }

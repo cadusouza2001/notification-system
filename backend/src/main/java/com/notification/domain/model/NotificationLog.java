@@ -3,9 +3,8 @@ package com.notification.domain.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
-
 import java.time.OffsetDateTime;
+import lombok.*;
 
 @Entity
 @Table(name = "notification_logs")
@@ -22,19 +21,22 @@ public class NotificationLog {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false,
-            foreignKey = @ForeignKey(name = "fk_logs_user"))
+    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_logs_user"))
     private User user;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false,
+    @JoinColumn(
+            name = "category_id",
+            nullable = false,
             foreignKey = @ForeignKey(name = "fk_logs_category"))
     private Category category;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "channel_id", nullable = false,
+    @JoinColumn(
+            name = "channel_id",
+            nullable = false,
             foreignKey = @ForeignKey(name = "fk_logs_channel"))
     private Channel channel;
 

@@ -1,8 +1,14 @@
 package com.notification.presentation.controller;
 
+import static org.mockito.BDDMockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.notification.application.service.NotificationService;
 import com.notification.presentation.dto.NotificationRequest;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -10,36 +16,29 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
-import static org.mockito.BDDMockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 @WebMvcTest(NotificationController.class)
 class NotificationControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @Autowired private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @Autowired private ObjectMapper objectMapper;
 
-    @MockBean
-    private NotificationService notificationService;
+    @MockBean private NotificationService notificationService;
 
     @Test
     void givenRequestWithEmptyMessage_whenSendingNotification_thenReturns400() throws Exception {
         // Given: request with empty message
-        NotificationRequest request = NotificationRequest.builder()
-                .category("Sports")
-                .message("")  // empty message
-                .build();
+        NotificationRequest request =
+                NotificationRequest.builder()
+                        .category("Sports")
+                        .message("") // empty message
+                        .build();
 
         // When & Then
-        mockMvc.perform(post("/api/notifications")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(
+                        post("/api/notifications")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
 
         then(notificationService).should(never()).sendNotification(any());
@@ -48,54 +47,61 @@ class NotificationControllerTest {
     @Test
     void givenRequestWithNullCategory_whenSendingNotification_thenReturns400() throws Exception {
         // Given: request with null category
-        NotificationRequest request = NotificationRequest.builder()
-                .category(null)  // null category
-                .message("Test message")
-                .build();
+        NotificationRequest request =
+                NotificationRequest.builder()
+                        .category(null) // null category
+                        .message("Test message")
+                        .build();
 
         // When & Then
-        mockMvc.perform(post("/api/notifications")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(
+                        post("/api/notifications")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
 
         then(notificationService).should(never()).sendNotification(any());
     }
 
     @Test
-    void givenServiceThrowsIllegalArgumentException_whenSendingNotification_thenReturns400() throws Exception {
+    void givenServiceThrowsIllegalArgumentException_whenSendingNotification_thenReturns400()
+            throws Exception {
         // Given: valid request but service throws IllegalArgumentException
-        NotificationRequest request = NotificationRequest.builder()
-                .category("InvalidCategory")
-                .message("Test message")
-                .build();
+        NotificationRequest request =
+                NotificationRequest.builder()
+                        .category("InvalidCategory")
+                        .message("Test message")
+                        .build();
 
         willThrow(new IllegalArgumentException("Category not found: InvalidCategory"))
-                .given(notificationService).sendNotification(any());
+                .given(notificationService)
+                .sendNotification(any());
 
         // When & Then
-        mockMvc.perform(post("/api/notifications")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(
+                        post("/api/notifications")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("Category not found: InvalidCategory"));
     }
 
     @Test
-    void givenServiceThrowsRuntimeException_whenSendingNotification_thenReturns500() throws Exception {
+    void givenServiceThrowsRuntimeException_whenSendingNotification_thenReturns500()
+            throws Exception {
         // Given: valid request but service throws RuntimeException
-        NotificationRequest request = NotificationRequest.builder()
-                .category("Sports")
-                .message("Test message")
-                .build();
+        NotificationRequest request =
+                NotificationRequest.builder().category("Sports").message("Test message").build();
 
         willThrow(new RuntimeException("Database connection failed"))
-                .given(notificationService).sendNotification(any());
+                .given(notificationService)
+                .sendNotification(any());
 
         // When & Then
-        mockMvc.perform(post("/api/notifications")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(
+                        post("/api/notifications")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isInternalServerError())
                 .andExpect(content().string("Internal error: Database connection failed"));
     }
@@ -103,15 +109,14 @@ class NotificationControllerTest {
     @Test
     void givenValidRequest_whenSendingNotification_thenReturns202() throws Exception {
         // Given: valid request
-        NotificationRequest request = NotificationRequest.builder()
-                .category("Sports")
-                .message("Game tonight!")
-                .build();
+        NotificationRequest request =
+                NotificationRequest.builder().category("Sports").message("Game tonight!").build();
 
         // When & Then
-        mockMvc.perform(post("/api/notifications")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(
+                        post("/api/notifications")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isAccepted());
 
         then(notificationService).should().sendNotification(any());

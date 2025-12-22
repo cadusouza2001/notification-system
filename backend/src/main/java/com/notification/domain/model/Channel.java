@@ -5,9 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
-@Table(name = "channels", uniqueConstraints = {
-        @UniqueConstraint(name = "uq_channels_name", columnNames = "name")
-})
+@Table(
+        name = "channels",
+        uniqueConstraints = {@UniqueConstraint(name = "uq_channels_name", columnNames = "name")})
 @Getter
 @Setter
 @NoArgsConstructor

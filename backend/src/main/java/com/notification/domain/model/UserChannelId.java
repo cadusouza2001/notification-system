@@ -1,9 +1,8 @@
 package com.notification.domain.model;
 
 import jakarta.persistence.Embeddable;
-import lombok.*;
-
 import java.io.Serializable;
+import lombok.*;
 
 @Embeddable
 @Getter

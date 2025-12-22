@@ -1,18 +1,16 @@
 package com.notification.application.service;
 
-
-import com.notification.domain.strategy.NotificationStrategy;
 import com.notification.domain.model.*;
+import com.notification.domain.strategy.NotificationStrategy;
 import com.notification.infrastructure.persistence.repository.*;
 import com.notification.presentation.dto.*;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
 
 @Service
 public class NotificationService {
@@ -31,8 +29,7 @@ public class NotificationService {
             CategoryRepository categoryRepository,
             SubscriptionRepository subscriptionRepository,
             UserChannelRepository userChannelRepository,
-            NotificationLogRepository notificationLogRepository
-    ) {
+            NotificationLogRepository notificationLogRepository) {
         this.categoryRepository = categoryRepository;
         this.subscriptionRepository = subscriptionRepository;
         this.userChannelRepository = userChannelRepository;
@@ -44,12 +41,19 @@ public class NotificationService {
     }
 
     public void sendNotification(NotificationRequest request) {
-        Category category = categoryRepository.findByName(request.getCategory())
-                .orElseThrow(() -> new IllegalArgumentException("Category not found: " + request.getCategory()));
+        Category category =
+                categoryRepository
+                        .findByName(request.getCategory())
+                        .orElseThrow(
+                                () ->
+                                        new IllegalArgumentException(
+                                                "Category not found: " + request.getCategory()));
 
         List<Subscription> subsForCategory = subscriptionRepository.findByCategory(category);
-        log.info("Dispatching notifications for category '{}' to {} subscribed users",
-                category.getName(), subsForCategory.size());
+        log.info(
+                "Dispatching notifications for category '{}' to {} subscribed users",
+                category.getName(),
+                subsForCategory.size());
 
         for (Subscription sub : subsForCategory) {
             User user = sub.getUser();
@@ -74,38 +78,46 @@ public class NotificationService {
                 try {
                     strategy.send(user, request.getMessage());
 
-                    NotificationLog logEntry = NotificationLog.builder()
-                            .user(user)
-                            .category(category)
-                            .channel(channel)
-                            .message(request.getMessage())
-                            .createdAt(OffsetDateTime.now())
-                            .build();
+                    NotificationLog logEntry =
+                            NotificationLog.builder()
+                                    .user(user)
+                                    .category(category)
+                                    .channel(channel)
+                                    .message(request.getMessage())
+                                    .createdAt(OffsetDateTime.now())
+                                    .build();
 
                     notificationLogRepository.save(logEntry);
                 } catch (Exception ex) {
-                    log.error("Failed to send via channel '{}' for user '{}': {}",
-                            channelName, user.getEmail(), ex.getMessage(), ex);
+                    log.error(
+                            "Failed to send via channel '{}' for user '{}': {}",
+                            channelName,
+                            user.getEmail(),
+                            ex.getMessage(),
+                            ex);
                 }
             }
         }
     }
 
     public List<LogResponse> getAllLogs() {
-        List<NotificationLog> logs = notificationLogRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+        List<NotificationLog> logs =
+                notificationLogRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
         DateTimeFormatter fmt = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
         List<LogResponse> responses = new ArrayList<>(logs.size());
         for (NotificationLog l : logs) {
-            responses.add(LogResponse.builder()
-                    .id(l.getId())
-                    .type("Notification")
-                    .userName(l.getUser() != null ? l.getUser().getName() : null)
-                    .category(l.getCategory() != null ? l.getCategory().getName() : null)
-                    .channel(l.getChannel() != null ? l.getChannel().getName() : null)
-                    .message(l.getMessage())
-                    .timestamp(l.getCreatedAt() != null ? l.getCreatedAt().format(fmt) : null)
-                    .build());
+            responses.add(
+                    LogResponse.builder()
+                            .id(l.getId())
+                            .type("Notification")
+                            .userName(l.getUser() != null ? l.getUser().getName() : null)
+                            .category(l.getCategory() != null ? l.getCategory().getName() : null)
+                            .channel(l.getChannel() != null ? l.getChannel().getName() : null)
+                            .message(l.getMessage())
+                            .timestamp(
+                                    l.getCreatedAt() != null ? l.getCreatedAt().format(fmt) : null)
+                            .build());
         }
         return responses;
     }
