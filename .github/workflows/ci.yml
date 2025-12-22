@@ -97,10 +97,10 @@ jobs:
       # 2. Start dev server and run tests
       - name: Start dev server
         working-directory: frontend
-        run: nohup npm run dev -- --port 5173 >/dev/null 2>&1 &
+        run: nohup npm run dev -- --port 5173 --host 127.0.0.1 --strictPort >/dev/null 2>&1 &
 
       - name: Wait for dev server
-        run: npx wait-on http://127.0.0.1:5173
+        run: npx wait-on --timeout 120000 http-get://127.0.0.1:5173/
 
       - name: Run Cypress Tests
         working-directory: frontend
