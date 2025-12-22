@@ -29,28 +29,9 @@ class NotificationControllerTest {
     private NotificationService notificationService;
 
     @Test
-    void givenRequestWithMissingUserId_whenSendingNotification_thenReturns400() throws Exception {
-        // Given: request without userId
-        NotificationRequest request = NotificationRequest.builder()
-                .category("Sports")
-                .message("Test message")
-                // userId is null
-                .build();
-
-        // When & Then
-        mockMvc.perform(post("/api/notifications")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
-
-        then(notificationService).should(never()).sendNotification(any());
-    }
-
-    @Test
     void givenRequestWithEmptyMessage_whenSendingNotification_thenReturns400() throws Exception {
         // Given: request with empty message
         NotificationRequest request = NotificationRequest.builder()
-                .userId(1L)
                 .category("Sports")
                 .message("")  // empty message
                 .build();
@@ -68,7 +49,6 @@ class NotificationControllerTest {
     void givenRequestWithNullCategory_whenSendingNotification_thenReturns400() throws Exception {
         // Given: request with null category
         NotificationRequest request = NotificationRequest.builder()
-                .userId(1L)
                 .category(null)  // null category
                 .message("Test message")
                 .build();
@@ -86,7 +66,6 @@ class NotificationControllerTest {
     void givenServiceThrowsIllegalArgumentException_whenSendingNotification_thenReturns400() throws Exception {
         // Given: valid request but service throws IllegalArgumentException
         NotificationRequest request = NotificationRequest.builder()
-                .userId(1L)
                 .category("InvalidCategory")
                 .message("Test message")
                 .build();
@@ -106,7 +85,6 @@ class NotificationControllerTest {
     void givenServiceThrowsRuntimeException_whenSendingNotification_thenReturns500() throws Exception {
         // Given: valid request but service throws RuntimeException
         NotificationRequest request = NotificationRequest.builder()
-                .userId(1L)
                 .category("Sports")
                 .message("Test message")
                 .build();
@@ -126,7 +104,6 @@ class NotificationControllerTest {
     void givenValidRequest_whenSendingNotification_thenReturns202() throws Exception {
         // Given: valid request
         NotificationRequest request = NotificationRequest.builder()
-                .userId(1L)
                 .category("Sports")
                 .message("Game tonight!")
                 .build();

@@ -89,14 +89,12 @@ class NotificationIntegrationTest {
     @Transactional
     void givenValidNotificationRequest_whenSendingThroughFullFlow_thenSuccessfullyPersistsLog() throws Exception {
         // Given: build JSON using the actual saved ID
-        String payload = String.format("""
+        String payload = """
         {
-          "userId": %d,
           "category": "Sports",
-          "channel": "SMS",
           "message": "Integration test message"
         }
-        """, savedUserId);
+        """;
 
         // When
         mockMvc.perform(
