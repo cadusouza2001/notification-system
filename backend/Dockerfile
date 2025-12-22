@@ -1,28 +1,31 @@
-# Use OpenJDK 21 as base image
-FROM openjdk:21-jdk-slim
+# Multi-stage build using Eclipse Temurin
+# Build stage
+FROM maven:3.9-eclipse-temurin-21 AS builder
 
-# Set working directory
 WORKDIR /app
 
-# Copy Maven wrapper and pom.xml
-COPY mvnw .
-COPY .mvn .mvn
+# Copy pom.xml first for dependency caching
 COPY pom.xml .
 
-# Make Maven wrapper executable
-RUN chmod +x ./mvnw
-
 # Download dependencies
-RUN ./mvnw dependency:go-offline -B
+RUN mvn dependency:go-offline -B
 
 # Copy source code
 COPY src ./src
 
 # Build the application
-RUN ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests
+
+# Runtime stage
+FROM eclipse-temurin:21-jre
+
+WORKDIR /app
+
+# Copy the built jar from builder stage
+COPY --from=builder /app/target/notification-backend-1.0.0.jar app.jar
 
 # Expose port
 EXPOSE 8080
 
 # Run the application
-CMD ["java", "-jar", "target/notification-backend-1.0.0.jar"]
+CMD ["java", "-jar", "app.jar"]
