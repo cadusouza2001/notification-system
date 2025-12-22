@@ -18,7 +18,7 @@
     "format:fix": "prettier --write \"src/**/*.{ts,tsx,css,json}\"",
     "test": "cypress run --component && cypress run --e2e",
     "test:cov": "npm run cy:run:component:cov && npm run cy:run:e2e:cov && npm run coverage:report && npm run coverage:check",
-    "test:ci": "start-server-and-test 'npm run dev -- --port 5173' http://127.0.0.1:5173 'npm test'"
+    "test:ci": "start-server-and-test 'npm run dev -- --port 5173 --host' http-get://127.0.0.1:5173 'npm test'"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
