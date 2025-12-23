@@ -1,4 +1,4 @@
-# Enterprise Notification System
+# Notification System
 
 [![Build Status](https://github.com/cadusouza2001/notification-system/actions/workflows/ci.yml/badge.svg)](https://github.com/cadusouza2001/notification-system/actions/workflows/ci.yml)
 ![Coverage](.github/badges/jacoco.svg)
